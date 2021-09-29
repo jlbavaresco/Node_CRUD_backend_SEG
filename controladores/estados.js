@@ -51,7 +51,7 @@ const deleteEstado = (request, response, next) => {
         [codigo],
         (error, results) => {
             if (error || results.rowCount == 0) {
-                return response.status(401).json({ status: 'error', message: 'Não foi possivel remover o estado' });
+                return response.status(401).json({ status: 'error', message: 'Não foi possivel remover o estado: ' + error });
             }
             response.status(201).json({ status: 'success', message: 'Estado removido com sucesso' })
         },
