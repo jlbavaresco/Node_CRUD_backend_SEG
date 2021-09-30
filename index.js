@@ -1,55 +1,59 @@
 const express = require('express')
-const bodyParser = require('body-parser')
 const cors = require('cors')
 const { pool } = require('./config')
-const { request, response } = require('express')
 
 const app = express()
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 app.use(cors())
 
 const controleEstado = require("./controladores/estados");
 const controleCidade = require("./controladores/cidades");
 const controlePessoa = require("./controladores/pessoas");
 const controleTelefone = require("./controladores/telefones");
+const controleUsuario = require("./controladores/usuarios")
 
 app
     .route('/api/estados')
-    .get(controleEstado.getEstados)
-    .post(controleEstado.addEstado)
-    .put(controleEstado.updateEstado)
+    .get(controleUsuario.verificaJWT, controleEstado.getEstados)
+    .post(controleUsuario.verificaJWT, controleEstado.addEstado)
+    .put(controleUsuario.verificaJWT, controleEstado.updateEstado)
 app.route('/api/estados/:codigo')
-    .get(controleEstado.getEstadoPorID)
-    .delete(controleEstado.deleteEstado)
+    .get(controleUsuario.verificaJWT, controleEstado.getEstadoPorID)
+    .delete(controleUsuario.verificaJWT, controleEstado.deleteEstado)
 app
     .route('/api/cidades')
-    .get(controleCidade.getCidades)
-    .post(controleCidade.addCidade)
-    .put(controleCidade.updateCidade)
+    .get(controleUsuario.verificaJWT, controleCidade.getCidades)
+    .post(controleUsuario.verificaJWT, controleCidade.addCidade)
+    .put(controleUsuario.verificaJWT, controleCidade.updateCidade)
 app.route('/api/cidades/:codigo')
-    .get(controleCidade.getCidadePorID)
-    .delete(controleCidade.deleteCidade)
+    .get(controleUsuario.verificaJWT, controleCidade.getCidadePorID)
+    .delete(controleUsuario.verificaJWT, controleCidade.deleteCidade)
 app
     .route('/api/pessoas')
-    .get(controlePessoa.getPessoas)
-    .post(controlePessoa.addPessoa)
-    .put(controlePessoa.updatePessoa)
+    .get(controleUsuario.verificaJWT, controlePessoa.getPessoas)
+    .post(controleUsuario.verificaJWT, controlePessoa.addPessoa)
+    .put(controleUsuario.verificaJWT, controlePessoa.updatePessoa)
 app.route('/api/pessoas/:codigo')
-    .get(controlePessoa.getPessoaPorID)
-    .delete(controlePessoa.deletePessoa) 
+    .get(controleUsuario.verificaJWT, controlePessoa.getPessoaPorID)
+    .delete(controleUsuario.verificaJWT, controlePessoa.deletePessoa) 
 
 app
     .route('/api/telefones')
-    .post(controleTelefone.addTelefone)
-    .put(controleTelefone.updateTelefone)
+    .post(controleUsuario.verificaJWT, controleTelefone.addTelefone)
+    .put(controleUsuario.verificaJWT, controleTelefone.updateTelefone)
 app.route('/api/telefones/:codigopessoa')
-    .get(controleTelefone.getTelefones)
+    .get(controleUsuario.verificaJWT, controleTelefone.getTelefones)
 app.route('/api/telefones/:codigo')   
-    .delete(controleTelefone.deleteTelefone) 
+    .delete(controleUsuario.verificaJWT, controleTelefone.deleteTelefone) 
 app.route('/api/telefone/:codigo') 
-    .get(controleTelefone.getTelefonePorID)        
+    .get(controleUsuario.verificaJWT, controleTelefone.getTelefonePorID)    
+    
+    
+app
+    .route("/api/login")
+    .post(controleUsuario.login)       
 
 
 app.listen(process.env.PORT || 3002, () => {
