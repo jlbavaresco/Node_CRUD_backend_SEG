@@ -14,7 +14,7 @@ const login = (request, response, next) => {
         }
         const nome_usuario = results.rows[0].nome_usuario; //ID do usuário retornado do BD
         const token = jwt.sign({ nome_usuario }, process.env.SECRET, {
-            expiresIn: 30 //expira em 5 min
+            expiresIn: 300 //expira em 5 min
         })
         return response.json({ auth: true, token: token })
     },
